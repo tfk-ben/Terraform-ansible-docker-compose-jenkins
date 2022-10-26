@@ -1,0 +1,14 @@
+===============================
+Create EC2 instance and install jenkins image with Terraform-Ansible
+===============================
+
+Requirement:
+
+- Terraform and Ansible installed 
+
+- Terraform connected to aws account
+
+
+.. code-block:: sh
+
+    $ terraform apply -auto-approve
