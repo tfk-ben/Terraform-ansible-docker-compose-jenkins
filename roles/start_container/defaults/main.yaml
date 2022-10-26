@@ -1,0 +1,2 @@
+#when ansible dont find values in vars file he check here
+docker_registry: https://index.docker.io/v1/

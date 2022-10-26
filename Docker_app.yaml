@@ -1,0 +1,35 @@
+---
+- name: Wait for ssh connection
+  hosts: all
+  gather_facts: False
+  tasks: 
+    - name: Ensure ssh port open
+      ansible.builtin.wait_for:
+        port: 22 #wait for port 22 to open
+        delay: 10 #start checking after 10s
+        timeout: 100 #check for 100s
+        search_regex: OpenSSH #look for openssh
+        host: '{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}' 
+        #A resolvable hostname or IP address to wait for. this syntax from documentation Default: “127.0.0.1”
+      vars:
+        ansible_connection: local #execute this tast localy 
+
+
+- name: Install python3, docker, docker-compose
+  hosts: all
+  #we need to switch to root user first 
+  #after seting become to yes it will be auto root so no need for become_user: root  
+  become: yes
+  #gather_facts: False
+  roles:
+    - install_docker
+
+
+
+#to refrence the roles instead of tasks we yse roles:
+- name: start docker container 
+  hosts: all
+  become: True 
+  roles:
+    - start_container #name of role
+

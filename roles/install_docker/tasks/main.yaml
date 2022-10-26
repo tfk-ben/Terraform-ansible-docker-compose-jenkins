@@ -1,0 +1,37 @@
+    - name: Install python3 and  docker 
+      yum:                                          
+        name:
+          - docker
+        update_cache: yes
+        state: present
+    
+    - name: Install Docker-compose
+      get_url: 
+        url: https://github.com/docker/compose/releases/download/1.27.4/docker-compose-Linux-{{lookup('pipe', 'uname -m')}}
+        # uname -s=linux and uname -m=x86_64 (we can type them on terminal to check) we can hard code them or we use function lookup
+        #for the second one we use lookup : it allow ansible to check data from outside sources 
+        # pipe take the output of uname -m and put it in the link (lookup syntax)
+        # so {{lookup('pipe', 'uname -m')}} will be rempled with uname -m value
+        dest: /usr/local/bin/docker-compose
+        mode: +x  #we add execute mode to the file 
+
+    - name: Start docker daemon
+      systemd:   #module for systemctl
+        name: docker
+        state: started      
+
+    - name: Add ec2-user to dokcer group
+      user: 
+        name: ec2-user
+        groups: docker
+        append: yes  
+
+    - name:  reconnect to server #because when we add user to a group it wont be added till we exit and reconnect again
+      meta: reset_connection  
+
+#we pull an docker image  
+    - name: Install docker python module
+      pip:
+        name: 
+          - docker
+          - docker-compose 

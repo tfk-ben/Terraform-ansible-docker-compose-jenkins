@@ -1,0 +1,22 @@
+ 
+    - name: copy docker-compose from local machine to server
+      copy:
+        src: Docker-compose.yaml #as long as we have it in "files" file we dont need to set path
+        dest: /home/ec2-user/docker-compose.yaml
+
+    - name: start conrainer
+      community.docker.docker_compose:
+        project_src: /home/ec2-user
+        state: present # equivalent of docker compose up
+
+    - name: install docker inside jenkins container
+      community.docker.docker_container_exec:
+        container: jenkins
+        command: /bin/bash -c "curl https://get.docker.com/ > dockerinstall && chmod 777 dockerinstall && ./dockerinstall"
+        chdir: /root
+        user: root
+      register: result
+
+    - name: Print stdout
+      debug:
+        var: result.stdout

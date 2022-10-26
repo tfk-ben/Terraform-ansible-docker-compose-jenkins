@@ -1,0 +1,14 @@
+version: '3'
+services:
+  django-app:
+    image: jenkins/jenkins
+    ports:
+    - 8080:8080
+    - 50000:50000
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - jenkins_home:/var/jenkins_home
+    container_name: jenkins
+volumes:
+  jenkins_home:
+    driver: local  
